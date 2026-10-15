@@ -1,0 +1,39 @@
+# INERT. Activation, private-source upload, one run and artifact storage need explicit authorization.
+# The input below is a human preflight declaration, NOT an API verification of free quota.
+name: Manual unsigned IPA for Windows signing candidate
+on:
+  workflow_dispatch:
+    inputs:
+      free_budget_checked:
+        description: Free macOS minutes AND artifact storage verified, hard spending stop verified
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+jobs:
+  unsigned:
+    if: ${{ inputs.free_budget_checked == true }}
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record SDK
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+      - name: Pure Swift tests
+        run: swift test --package-path Core
+      - name: Validate inputs
+        run: plutil -lint App/Info.plist App/PrivacyInfo.xcprivacy FrameGuide.xcodeproj/project.pbxproj
+      - name: Build and package unsigned iPhone app
+        run: sh tools/prepare-unsigned-ipa.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FrameGuide-unsigned-not-device-tested
+          path: |
+            build/UnsignedPackage/FrameGuide-unsigned.ipa
+            build/UnsignedPackage/FrameGuide-unsigned.ipa.sha256
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

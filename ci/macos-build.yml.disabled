@@ -1,0 +1,25 @@
+# INERT TEMPLATE. Not in .github/workflows. Do not activate without explicit authorization.
+# No signing credentials, no upload artifact, no automatic events.
+name: FrameGuide manual unsigned validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record available SDK (do not silently select a different destination)
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+      - name: Pure Swift tests (includes synthetic provider contracts)
+        run: swift test --package-path Core
+      - name: Validate plist and unsigned simulator compilation
+        run: |
+          plutil -lint App/Info.plist App/PrivacyInfo.xcprivacy FrameGuide.xcodeproj/project.pbxproj
+          xcodebuild -project FrameGuide.xcodeproj -scheme FrameGuide -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+      - name: Unsigned iPhone compilation (not an installable signed IPA)
+        run: xcodebuild -project FrameGuide.xcodeproj -scheme FrameGuide -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build

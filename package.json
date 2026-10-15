@@ -1,0 +1,11 @@
+{
+  "name": "frameguide-project-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node tools/generate-project.mjs",
+    "check": "node tools/generate-project.mjs --check",
+    "test": "node --test tools/tests/*.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,272 @@
+{
+  "project": "FrameGuide",
+  "scope": "Source only; excludes local checkpoints, credentials, photos, binaries and active workflows.",
+  "excludes": [
+    "docs/FILE_MANIFEST.json (self)",
+    "docs/environment-checkpoint.json",
+    ".git",
+    ".github",
+    "build",
+    ".build",
+    "DerivedData",
+    "node_modules"
+  ],
+  "count": 51,
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "2632a7922df29625ae4f9f50991d81fbba3a20efd0c3876265a24b5f7070f077",
+      "bytes": 115
+    },
+    {
+      "path": "App/Camera/CameraEngine.swift",
+      "sha256": "4ce4545753a9334cd7f807759ee5796422fe2322eb88e166aecd265f3ade6ff6",
+      "bytes": 17008
+    },
+    {
+      "path": "App/Camera/CameraPreview.swift",
+      "sha256": "84be7e50f49e33a63c6d25fbda1501338a5d4ea3a46575bf836d7c6e5eafb791",
+      "bytes": 4176
+    },
+    {
+      "path": "App/Camera/FrameAnalyzer.swift",
+      "sha256": "4fd2d3ac8a2c87ba324261fb457aec7f9db0923e9448f0a83e621180a6ffa667",
+      "bytes": 9120
+    },
+    {
+      "path": "App/Camera/MotionMonitor.swift",
+      "sha256": "0b0ef4cbcb9b11e86b9f1b88514ad64b6677c5e697856e4b8c20920f64e210e0",
+      "bytes": 2815
+    },
+    {
+      "path": "App/CameraModel.swift",
+      "sha256": "51cc805941b014b208d899bea080df4cc6620cdf7c057ad1c2e001289ef9078b",
+      "bytes": 5050
+    },
+    {
+      "path": "App/Cloud/CloudSettings.swift",
+      "sha256": "d85988bf076463ddb7fd173f61d882a18aeb6df6e6f7fb786f15592bf77871d6",
+      "bytes": 5252
+    },
+    {
+      "path": "App/Cloud/LiveAdviceModel.swift",
+      "sha256": "bf524983363cefdf5fd84382a16f00103cbeef39989ed87e3ba2d2a5bbbcc46e",
+      "bytes": 8039
+    },
+    {
+      "path": "App/Cloud/RemoteClient.swift",
+      "sha256": "e97bc74644c81b281e42bd6bd7ba7dffe4453cb8d037d2ba3508958157c0e7c0",
+      "bytes": 7018
+    },
+    {
+      "path": "App/Editing/PhotoRenderer.swift",
+      "sha256": "03db1f665e304f2beb4c534f6c67d29a640487f475a347ea5765994c7648d16a",
+      "bytes": 3226
+    },
+    {
+      "path": "App/Editing/PhotoReviewModel.swift",
+      "sha256": "eece0b963251ccb7ead7eebc0ec02ed796c413fa7fa2961d1957785a68917f3c",
+      "bytes": 6850
+    },
+    {
+      "path": "App/FrameGuideApp.swift",
+      "sha256": "ff3d18170b25a706fee6181556856f0c6a501fc0177b2d23337abbaa545548db",
+      "bytes": 388
+    },
+    {
+      "path": "App/Info.plist",
+      "sha256": "8a486e5b57eab4d51430876a2dbd24b11de72e3e883765c705bdefd3262aef27",
+      "bytes": 1516
+    },
+    {
+      "path": "App/PerformanceMonitor.swift",
+      "sha256": "121ed4c0a0cc50db273d4030f0b9567cbb109480f22cb53286a193b5a1297d06",
+      "bytes": 826
+    },
+    {
+      "path": "App/PrivacyInfo.xcprivacy",
+      "sha256": "1d3bdac3ebb0d3ba7df7dada44b640d0de2124fda51f59730072b6905ce7dcdc",
+      "bytes": 847
+    },
+    {
+      "path": "App/Storage/PhotoStore.swift",
+      "sha256": "8dd999bf565cb8e00eaf7ef31e4f68d132cc1aad1bd9a24f611490fb1ad4e3f2",
+      "bytes": 4359
+    },
+    {
+      "path": "App/UI/CameraScreen.swift",
+      "sha256": "0183d3e440805d7fb64f4ea9fc794088b877b1eb214aa8fca7cf3c84f008cc11",
+      "bytes": 5519
+    },
+    {
+      "path": "App/UI/LibraryScreen.swift",
+      "sha256": "5777c4083bac49a29b60d41804698b9242fafdc0963e3e34f647aa8bbcfc3c66",
+      "bytes": 6477
+    },
+    {
+      "path": "App/UI/LiveAdvicePanel.swift",
+      "sha256": "54b18e9e3773f42a51bb850661b19f5ae5e347189cb18dc9193867dd0b0f7d59",
+      "bytes": 3696
+    },
+    {
+      "path": "App/UI/SettingsScreen.swift",
+      "sha256": "aa8297c6785f422ac5c8bac2678d2eec1215784d19bdf0ffd9d137f34a80c120",
+      "bytes": 8163
+    },
+    {
+      "path": "ci/macos-build.yml.disabled",
+      "sha256": "5cb6e28978b2e1b9f6d78a46d71029b9125c880c1e1afb4006eb130c5233eee1",
+      "bytes": 1260
+    },
+    {
+      "path": "ci/windows-install-artifact.yml.disabled",
+      "sha256": "1734a2a44ec1e2be4406be53dd4891a5b54eae159f162cc016a83a995f4d2434",
+      "bytes": 1421
+    },
+    {
+      "path": "Core/Package.swift",
+      "sha256": "4ff9960bba584bbce8dff20bd93dcf6b201f1f02ccab68f9e51f7755e3210413",
+      "bytes": 338
+    },
+    {
+      "path": "Core/Sources/CompositionCore/CameraStartIntent.swift",
+      "sha256": "8ab3c53a2c32be10e440bc1e77bbaf81c37b4875a5f19843df74cbcb480955ed",
+      "bytes": 738
+    },
+    {
+      "path": "Core/Sources/CompositionCore/CloudContract.swift",
+      "sha256": "832e75508f1ad5b822fd53973617568a5bee6c3fcd9ea71b2b80e73cbbe4cc56",
+      "bytes": 2197
+    },
+    {
+      "path": "Core/Sources/CompositionCore/Composition.swift",
+      "sha256": "67a42dc7b12ec1bbe92de6e12537e1ecd901b415b3fb2e212cd075d3c5d1c949",
+      "bytes": 4597
+    },
+    {
+      "path": "Core/Sources/CompositionCore/LiveRequestGate.swift",
+      "sha256": "5b3914e4013070c358d76987b58ffe9f9cf4cbf628e42437a357e118ca7e8a89",
+      "bytes": 3550
+    },
+    {
+      "path": "Core/Sources/CompositionCore/RequestGate.swift",
+      "sha256": "e07923323aa2490847d37877897903e98ebdcd3fb0738c6890c3c4c5f7358249",
+      "bytes": 777
+    },
+    {
+      "path": "Core/Sources/CompositionCore/RuntimePolicy.swift",
+      "sha256": "3d9293ea112c0634905c9ea6e07aaa77323f32e30b60f7eb6458809c42edc0c3",
+      "bytes": 2016
+    },
+    {
+      "path": "Core/Sources/CompositionCore/ToneRecipe.swift",
+      "sha256": "49f60109d2982fb6ae0e84e8d6e974cd16ace2b1fb664bbec24e060972fc037e",
+      "bytes": 1717
+    },
+    {
+      "path": "Core/Tests/CompositionCoreTests/CameraLifecycleTests.swift",
+      "sha256": "243b8a8f21f6f9f8689b2fa94c35dae395f6ecaaea22365383421ac2beb11bde",
+      "bytes": 1527
+    },
+    {
+      "path": "Core/Tests/CompositionCoreTests/CloudContractTests.swift",
+      "sha256": "9b67e04a4f62cdc0b14994e7a29e8e0510c6ded27e508a6fb65a7a73fb9d0de5",
+      "bytes": 3697
+    },
+    {
+      "path": "Core/Tests/CompositionCoreTests/CoreTests.swift",
+      "sha256": "a6bad07bd9188e43cdabd0e111c1ac2c84c844b8ba80882feec5c19a3cb41c42",
+      "bytes": 3794
+    },
+    {
+      "path": "Core/Tests/CompositionCoreTests/LiveRequestTests.swift",
+      "sha256": "b7d57d3473a7cddd628241184d8e813af1c3b4d00fb032885df80c3565053f88",
+      "bytes": 3564
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "542ac4ccdb36a02ea1eda111d1d99c7deb5b6c87eee6498f69d3a2dbfb24d300",
+      "bytes": 6487
+    },
+    {
+      "path": "docs/BUILD_AND_INSTALL.md",
+      "sha256": "add801a4fecf1a02e863e539c4de05f6168a86b913c6a1255d33c82ef0b52829",
+      "bytes": 8330
+    },
+    {
+      "path": "docs/CLOUD.md",
+      "sha256": "1c7ee86fc177a4c8d61b7fe00fa735da462818369bf38918827dac13d788f65a",
+      "bytes": 5301
+    },
+    {
+      "path": "docs/DEPENDENCIES.md",
+      "sha256": "48e42ed8ca058bd496fa0f8743b24f0596cabdc5df5d6fc91237910b99356fb2",
+      "bytes": 3053
+    },
+    {
+      "path": "docs/VERIFICATION.md",
+      "sha256": "21b0ed195c617abb6c50d221aaeb086caf3fd8b118fb60525bc16c777cd10486",
+      "bytes": 8915
+    },
+    {
+      "path": "docs/windows-checks.txt",
+      "sha256": "a38bb893523d63b89d35cddf4f811482548b3b0218fbad48722c93ff1075b331",
+      "bytes": 4147
+    },
+    {
+      "path": "FrameGuide.xcodeproj/project.pbxproj",
+      "sha256": "9f954d54f903095a1f1de121ea8c0822eac379b3339091752e3defc1e3e42344",
+      "bytes": 20933
+    },
+    {
+      "path": "FrameGuide.xcodeproj/xcshareddata/xcschemes/FrameGuide.xcscheme",
+      "sha256": "ed415cd095c9fb220a2ef632bd3340cb30983664547f7909d9bba0e0858c8a50",
+      "bytes": 2240
+    },
+    {
+      "path": "package.json",
+      "sha256": "ad1c3fa36a28265b4a1b409fbb748424689ec18b4c068193fadb77bbce885633",
+      "bytes": 290
+    },
+    {
+      "path": "README.md",
+      "sha256": "69e8b6d9519211ad795e8014d144b40bcc0bbf7677330a31eb61e5310de47a34",
+      "bytes": 5144
+    },
+    {
+      "path": "tools/create-manifest.mjs",
+      "sha256": "5022d96f45f47071b54ef3e0d9ca389be03adf48cff874d3e8d1ac82e6801e5b",
+      "bytes": 1351
+    },
+    {
+      "path": "tools/generate-project.mjs",
+      "sha256": "91cb55ea4396dcbbc30dbf410da6d451985c39aeccabe0d3123d21f6b648c0ac",
+      "bytes": 9520
+    },
+    {
+      "path": "tools/prepare-publish.mjs",
+      "sha256": "4639a60a12915925b999209ea8a30cc55e4d19006a241ef5680d42cb1b38a2fc",
+      "bytes": 3484
+    },
+    {
+      "path": "tools/prepare-unsigned-ipa.sh",
+      "sha256": "1473f73154b7b50becb80b8ce9d08ae9276ee3c0f08f04b0030c15fb05772555",
+      "bytes": 1308
+    },
+    {
+      "path": "tools/tests/project.test.mjs",
+      "sha256": "5a0ad0a3675d3b1bc3f7675054deb116c5db7296bff3fa5875088b42695140f8",
+      "bytes": 10412
+    },
+    {
+      "path": "tools/verify-macos.sh",
+      "sha256": "1fc306735263c8f54bd8bdfc2e1a4ded627989748b86052088d74a9714d02553",
+      "bytes": 632
+    },
+    {
+      "path": "tools/verify-windows.ps1",
+      "sha256": "6f68fe80f894b13b4d145f2fb45f85635e3e923ef2ad15a894d4c2e9d91a1801",
+      "bytes": 912
+    }
+  ]
+}

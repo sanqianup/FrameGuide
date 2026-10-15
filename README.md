@@ -32,6 +32,7 @@
 - `Core/`：纯 Swift 构图、限频、热策略、水平数学、云端响应契约与请求身份门闩，可单独 `swift test`。
 - `tools/`：零 npm 依赖的工程生成器、结构测试和平台检查脚本。
 - `ci/macos-build.yml.disabled`：未激活的手动无签名构建模板，不在 `.github/workflows`。
+- `.github/workflows/unsigned-device.yml`：已按授权准备的手动、预算前提门闩、20分钟上限的标准 macOS 设备构建；提交不会自动运行。IPA 上限50MiB，artifact保留1天；实际执行及结果以 Actions 记录为准。
 - [完整文件清单](docs/FILE_MANIFEST.json)、[架构](docs/ARCHITECTURE.md)、[构建及免费安装路线](docs/BUILD_AND_INSTALL.md)、[云端协议](docs/CLOUD.md)、[授权审查](docs/DEPENDENCIES.md)。
 
 Windows / PowerShell：

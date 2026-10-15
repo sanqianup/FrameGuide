@@ -95,7 +95,13 @@ test('privacy manifest is bundled; camera and add-only photo permission descript
   assert.doesNotMatch(plist, /NSPhotoLibraryUsageDescription|NSMicrophoneUsageDescription|NSAllowsArbitraryLoads|UIBackgroundModes/);
 });
 test('CI templates are inert, unsigned, with explicit guards for optional artifacts', () => {
-  assert.equal(existsSync(resolve(root, '.github/workflows')), false);
+  if (existsSync(resolve(root, '.github/workflows'))) {
+    assert.deepEqual(filesUnder('.github/workflows'), ['.github/workflows/unsigned-device.yml']);
+    const active = contents('.github/workflows/unsigned-device.yml');
+    assert.match(active, /workflow_dispatch:/); assert.match(active, /free_budget_checked/);
+    assert.doesNotMatch(active, /pull_request:|push:|schedule:|secrets\.|allowProvisioningUpdates/);
+    assert.match(active, /runs-on: macos-15/); assert.match(active, /timeout-minutes: 20/);
+  }
   const template = contents('ci/macos-build.yml.disabled');
   assert.match(template, /workflow_dispatch:/); assert.doesNotMatch(template, /pull_request:|push:|schedule:|secrets\.|upload-artifact|allowProvisioningUpdates/);
   assert.equal((template.match(/CODE_SIGNING_ALLOWED=NO/g) ?? []).length, 2);

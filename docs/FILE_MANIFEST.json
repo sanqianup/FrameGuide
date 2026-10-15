@@ -1,18 +1,22 @@
 {
   "project": "FrameGuide",
-  "scope": "Source only; excludes local checkpoints, credentials, photos, binaries and active workflows.",
+  "scope": "Source plus one explicitly approved manual unsigned-device workflow; no local checkpoints, credentials, photos or binaries.",
   "excludes": [
     "docs/FILE_MANIFEST.json (self)",
     "docs/environment-checkpoint.json",
     ".git",
-    ".github",
     "build",
     ".build",
     "DerivedData",
     "node_modules"
   ],
-  "count": 51,
+  "count": 52,
   "files": [
+    {
+      "path": ".github/workflows/unsigned-device.yml",
+      "sha256": "8cd113e8ccfb4b73db7c8721b679a18eae5adec02ae6e2eecb75ddda97b5ffc8",
+      "bytes": 1533
+    },
     {
       "path": ".gitignore",
       "sha256": "2632a7922df29625ae4f9f50991d81fbba3a20efd0c3876265a24b5f7070f077",
@@ -205,8 +209,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "21b0ed195c617abb6c50d221aaeb086caf3fd8b118fb60525bc16c777cd10486",
-      "bytes": 8915
+      "sha256": "5956c2037df1ea59ec9f9b41b47f7904cf26bdfdbea2084694403fd7c90286ce",
+      "bytes": 8925
     },
     {
       "path": "docs/windows-checks.txt",
@@ -230,8 +234,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "69e8b6d9519211ad795e8014d144b40bcc0bbf7677330a31eb61e5310de47a34",
-      "bytes": 5144
+      "sha256": "a2922f46016b15efeea104b3583dab4b118fb3a664d86bb4ce61bb34750c9769",
+      "bytes": 5399
     },
     {
       "path": "tools/create-manifest.mjs",
@@ -245,18 +249,18 @@
     },
     {
       "path": "tools/prepare-publish.mjs",
-      "sha256": "4639a60a12915925b999209ea8a30cc55e4d19006a241ef5680d42cb1b38a2fc",
-      "bytes": 3484
+      "sha256": "6a25fd51b6e2bd8b12a873da2cf9558b22bfe5df98bdc7b06e66fa3466fdd398",
+      "bytes": 4277
     },
     {
       "path": "tools/prepare-unsigned-ipa.sh",
-      "sha256": "1473f73154b7b50becb80b8ce9d08ae9276ee3c0f08f04b0030c15fb05772555",
-      "bytes": 1308
+      "sha256": "7dc8d5f3a62438e11602e15bb71df5ee9761807e1aeb8bf4dca4541f7c02d0ff",
+      "bytes": 1833
     },
     {
       "path": "tools/tests/project.test.mjs",
-      "sha256": "5a0ad0a3675d3b1bc3f7675054deb116c5db7296bff3fa5875088b42695140f8",
-      "bytes": 10412
+      "sha256": "6f68aa13ca48c04c99d3782161d4995ef798f06815ec0a71e91c7e8b856e4334",
+      "bytes": 10855
     },
     {
       "path": "tools/verify-macos.sh",

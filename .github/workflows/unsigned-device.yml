@@ -1,0 +1,45 @@
+name: Manual unsigned device build
+on:
+  workflow_dispatch:
+    inputs:
+      free_budget_checked:
+        description: Included macOS minutes and artifact storage checked; zero-paid-use stop remains enabled
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: frameguide-unsigned-device
+  cancel-in-progress: false
+jobs:
+  unsigned:
+    if: ${{ inputs.free_budget_checked == true }}
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record actual toolchain
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+          swift --version
+      - name: Offline project checks
+        run: |
+          node tools/generate-project.mjs --check
+          node --test tools/tests/project.test.mjs
+      - name: Swift core and synthetic contract tests
+        run: swift test --package-path Core
+      - name: Validate Apple property lists
+        run: plutil -lint App/Info.plist App/PrivacyInfo.xcprivacy FrameGuide.xcodeproj/project.pbxproj
+      - name: Build and verify unsigned arm64 iPhoneOS IPA
+        run: sh tools/prepare-unsigned-ipa.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FrameGuide-unsigned-device-not-installed
+          path: |
+            build/UnsignedPackage/FrameGuide-unsigned.ipa
+            build/UnsignedPackage/FrameGuide-unsigned.ipa.sha256
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

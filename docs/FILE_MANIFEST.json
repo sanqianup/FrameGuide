@@ -10,7 +10,7 @@
     "DerivedData",
     "node_modules"
   ],
-  "count": 52,
+  "count": 53,
   "files": [
     {
       "path": ".github/workflows/unsigned-device.yml",
@@ -194,13 +194,18 @@
     },
     {
       "path": "docs/BUILD_AND_INSTALL.md",
-      "sha256": "add801a4fecf1a02e863e539c4de05f6168a86b913c6a1255d33c82ef0b52829",
-      "bytes": 8330
+      "sha256": "6dceaa6f4ca697abf5d0c864894be45ec2ad6af020f0ab4d661f0100c2c69cff",
+      "bytes": 8458
+    },
+    {
+      "path": "docs/CI_RESULTS.md",
+      "sha256": "1377190df0d60d8ef6d2905920e61266dcc08d05fc295a5629de223a4c3ea548",
+      "bytes": 2710
     },
     {
       "path": "docs/CLOUD.md",
-      "sha256": "1c7ee86fc177a4c8d61b7fe00fa735da462818369bf38918827dac13d788f65a",
-      "bytes": 5301
+      "sha256": "a77b61e989ed0076d4c6fb03b0d54d95582b8bff90672d72ec453bedf6f350b8",
+      "bytes": 5351
     },
     {
       "path": "docs/DEPENDENCIES.md",
@@ -209,8 +214,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "5956c2037df1ea59ec9f9b41b47f7904cf26bdfdbea2084694403fd7c90286ce",
-      "bytes": 8925
+      "sha256": "1bd624060bf4d2c7ee4611a7cecaf8587a6f290da78bb81d82510064d2ec81e3",
+      "bytes": 9212
     },
     {
       "path": "docs/windows-checks.txt",
@@ -234,8 +239,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "a2922f46016b15efeea104b3583dab4b118fb3a664d86bb4ce61bb34750c9769",
-      "bytes": 5399
+      "sha256": "3d097817573d23260e3895c2fd5c684b8da3ba2705aa8ad0d076bbf54dad546c",
+      "bytes": 5384
     },
     {
       "path": "tools/create-manifest.mjs",

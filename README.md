@@ -2,7 +2,7 @@
 
 独立、个人自用的原生 iPhone 相机工程。目标设备 iPhone 16 Pro / iOS 18.5，Deployment Target 18.5，后续兼容验证覆盖到 iOS 27。项目仅在当前新任务目录内创建，未改动 GeekListing 或其他工程。
 
-**当前交付是可审查源码与工程准备，不是已经编译、安装或实测完成的 App。** Windows 工程检查通过；Swift 编译、XCTest、iPhone 真机和 MiMo 实际调用均未执行。详见 [验收记录](docs/VERIFICATION.md)。
+**云端 macOS 设备编译及30项纯 Swift 测试已通过，已生成并在 Windows 复核无签名 iPhoneOS arm64 IPA。尚未签名安装、真机实测或调用 MiMo。** 构建来自 `4661d946b534eeefea8ae9f4bf562a2d95dafb3c`；后续文档提交未改变该构建的 App 源码。详见 [CI结果](docs/CI_RESULTS.md) 与 [验收记录](docs/VERIFICATION.md)。
 
 ## 已实现的源码范围
 
@@ -51,4 +51,4 @@ sh tools/verify-macos.sh
 
 增加/移动 Swift 文件时执行 `node tools/generate-project.mjs`；这会重建工程，已有签名和 Bundle ID 调整应在 Xcode 中重新设置。日常编辑源文件无需重新生成。
 
-按“获授权的私有 GitHub 仓库 → 核实免费额度及硬性费用阻断 → 单次云端 macOS 无签名构建 → Windows 本地免费签名候选验证”推进。[私有源码仓库](https://github.com/sanqianup/FrameGuide) 已创建，源码状态以实际 commit 为准；运行 CI、下载构建产物、安装第三方签名工具尚未执行。签名工具安装需另行授权，Apple 账号和设备操作由用户本人处理。详见构建文档的具体阻塞，当前尚不能承诺这条路线已成功安装。
+已完成私有仓库上传、费用前提核验、云端无签名构建和设备 IPA 下载复核。[私有源码仓库](https://github.com/sanqianup/FrameGuide) 保持 private。下一步是 Windows 本地免费签名候选验证；第三方签名工具安装需另行授权，Apple 账号和设备操作由用户本人处理。当前尚未安装，不承诺 iOS 真机功能或 iOS 27 兼容已验证。

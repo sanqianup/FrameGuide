@@ -10,14 +10,15 @@
 | 工程生成器执行 | 成功 | Node v24.16.0；已生成 project.pbxproj 和共享 scheme |
 | Windows Node 结构检查 | 17/17 通过 | `tools/verify-windows.ps1`；独立 OpenStep 解析、引用完整性、源码编译清单、测试目标、部署版本、CI/权限/网络边界；新增实时确认、单次取样、权限意图检查 |
 | Windows XML 解析 | 3/3 通过 | Info.plist、PrivacyInfo.xcprivacy、FrameGuide.xcscheme；不是 Apple plutil 验证 |
-| Swift 核心 XCTest | 30 项已编写，未执行 | CoreTests 9 + CloudContractTests 9 + LiveRequestTests 8 + CameraLifecycleTests 4；无 Swift 工具链，不能宣称通过 |
-| Apple SDK 类型检查/编译 | 未执行 | 没有 Mac/Xcode；Node 不能发现 Swift 类型、SDK 可用性或链接错误 |
-| macOS 无签名模拟器/设备构建 | 未执行 | 提供 verify-macos.sh 与未激活 CI 模板 |
+| Swift 核心 XCTest | 云端macOS 30/30通过 | CoreTests 9 + CloudContractTests 9 + LiveRequestTests 8 + CameraLifecycleTests 4；不是iOS真机功能测试 |
+| Apple SDK 类型检查/编译 | 云端设备构建通过 | Xcode16.4(16F6)、Swift6.1.2、iOS18.5 SDK；build commit 4661d946，见CI_RESULTS.md |
+| macOS 无签名设备构建/IPA | 成功并下载复核 | run38710533910；arm64、Mach-O平台iOS设备2、最低18.5.0、SDK18.5.0、无代码签名及描述文件；不是模拟器App |
+| 模拟器构建/App-host XCTest | 未执行 | 本次执行纯Swift核心测试与iPhoneOS设备build，没有模拟器运行或App-host测试结果 |
 | iOS 18.5 / iPhone 16 Pro | 未安装、未验证 | 用户目标设备，不是测试设备记录 |
 | 其他 iOS 版本直到 iOS 27 | 未验证 | Deployment Target 18.5 仅表达最低版本，不证明兼容范围 |
 | 真机 UI、旋转、镜头、拍摄、性能和热状态 | 未验证 | 不报告模拟跑分或假截图 |
-| MiMo / 生成式编辑真实集成 | 未执行 | 没有密钥、没有上传、没有 API 请求；合成响应测试也尚未在 Swift 执行 |
-| GitHub 身份及私有仓库 | 已核验并按授权创建 | sanqianup/FrameGuide，API确认private及写入权限；源码commit以远程实际记录为准。未检查或输出凭据；实际账单、额度及硬性费用阻断尚未核实，未触发CI |
+| MiMo / 生成式编辑真实集成 | 未执行 | 没有配置密钥、没有上传照片或调用模型；合成响应单元测试已在云端Swift执行，不能代替真实模型集成 |
+| GitHub 身份及私有仓库 | 已创建、上传并核验private | sanqianup/FrameGuide；核验免费额度及账户级零额外费用阻断后运行两次CI；未更改预算或扩大凭据访问 |
 | 环境断连复核 | 当前文件操作正常 | 收到断连通知后完成实际文件读写；本机 checkpoint 不纳入远程源码 |
 
 实际 Windows 命令输出存于 [windows-checks.txt](windows-checks.txt)。这些是**结构检查**，不能替代功能测试、Swift 编译、性能评测或真机验证。
@@ -28,7 +29,7 @@
 
 新增：取景请求在未配置/不稳定/不可用状态禁止准入、重复点击只接收一个采样意图、取样和明确确认缺一不可、镜头/旋转/移动/后台的代次失效、冻结确认超时、取消后保留限流、过时回调不释放新请求、采样/时钟异常、亮度差异累积失效、返回最大帧龄，以及权限请求去重、晚到授权不在后台启动、前台恢复和拒绝清理状态。
 
-纯 Swift `swift test --package-path Core` 与 App-host XCTest 使用同一批测试。二者都未执行。尚无真实传输 mock 的 HTTP 错误/取消单元测试；实际 URLSession 429/断网/重定向/超时行为必须按下表验证，不能把 envelope 合成测试等同于网络集成测试。
+纯 Swift `swift test --package-path Core` 已在云端macOS执行，30项通过。App-host XCTest 使用同一批测试但未执行。尚无真实传输 mock 的 HTTP 错误/取消单元测试；实际 URLSession 429/断网/重定向/超时行为必须按下表验证，不能把 envelope 合成测试等同于网络集成测试。
 
 ## 真机验收流程（全部待执行）
 
@@ -69,7 +70,7 @@
 
 ## 已知待验证与限制
 
-- Swift/SDK 编译与设备性能是第一阻塞，可能发现需要修复的 API、类型或设备协商问题；当前不应视为可直接装机成品。
+- Swift/SDK 编译已通过；当前阻塞是未签名安装和未做设备性能/交互验证。不能把CI成功当作相机会话、权限、旋转或模型请求已在真机运行。
 - 未实现 RAW、48MP、视频录制、Live Photo、连续自动云端上传、第三方裁剪模型或高级摄影师审美模型。取景中手动云端建议源码已加入，但尚未真实调用或真机验证。
 - 调色撤销仅在当前照片页面有效；不持久化调色历史，导出结果仍为独立副本。
 - 未实现照片批量删除/自动清理或崩溃后孤立原图目录修复；卸载会丢失 App 内图片。

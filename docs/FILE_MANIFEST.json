@@ -24,8 +24,8 @@
     },
     {
       "path": "App/Camera/CameraEngine.swift",
-      "sha256": "4ce4545753a9334cd7f807759ee5796422fe2322eb88e166aecd265f3ade6ff6",
-      "bytes": 17008
+      "sha256": "38b86697854f4b077fe5418c0286c182300ef81bc781054865b65d481cb7bbd1",
+      "bytes": 17044
     },
     {
       "path": "App/Camera/CameraPreview.swift",
@@ -254,7 +254,7 @@
     },
     {
       "path": "tools/prepare-unsigned-ipa.sh",
-      "sha256": "7dc8d5f3a62438e11602e15bb71df5ee9761807e1aeb8bf4dca4541f7c02d0ff",
+      "sha256": "c21c9d8e8fed593a3fbecdb22436d6329e4baad991d2dee9307c47ee0b9a6a08",
       "bytes": 1833
     },
     {

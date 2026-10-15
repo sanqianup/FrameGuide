@@ -20,7 +20,7 @@ if [ "$platform_name" != "iPhoneOS" ]; then
   echo "Refusing a simulator/non-iPhoneOS app." >&2
   exit 1
 fi
-xcrun lipo -verify_arch arm64 "$app_path/FrameGuide"
+xcrun lipo "$app_path/FrameGuide" -verify_arch arm64
 xcrun vtool -show-build "$app_path/FrameGuide" | grep -Eq 'platform[[:space:]]+IOS$'
 if [ -e "$package_path/Payload" ] || [ -e "$package_path/FrameGuide-unsigned.ipa" ]; then
   echo "Packaging output exists; choose a fresh checkout/output before rerunning. Nothing was removed." >&2

@@ -46,18 +46,18 @@ final class CameraEngine: NSObject {
         analyzer.onSceneChange = { [weak self] revision in self?.emit(.sceneChanged(revision)) }
         analyzer.onPreview = { [weak self] id, result in self?.emit(.preview(id, result)) }
         let center = NotificationCenter.default
-        observers.append(center.addObserver(forName: .AVCaptureSessionWasInterrupted, object: session, queue: nil) { [weak self] _ in
+        observers.append(center.addObserver(forName: AVCaptureSession.wasInterruptedNotification, object: session, queue: nil) { [weak self] _ in
             guard let self else { return }
             self.sessionQueue.async {
                 self.interrupted = true; self.refreshAnalysis()
                 self.emit(.state("相机被系统中断 · 等待恢复", ready: false))
             }
         })
-        observers.append(center.addObserver(forName: .AVCaptureSessionInterruptionEnded, object: session, queue: nil) { [weak self] _ in
+        observers.append(center.addObserver(forName: AVCaptureSession.interruptionEndedNotification, object: session, queue: nil) { [weak self] _ in
             guard let self else { return }
             self.sessionQueue.async { self.interrupted = false; self.resumeIfNeeded() }
         })
-        observers.append(center.addObserver(forName: .AVCaptureSessionRuntimeError, object: session, queue: nil) { [weak self] note in
+        observers.append(center.addObserver(forName: AVCaptureSession.runtimeErrorNotification, object: session, queue: nil) { [weak self] note in
             guard let self else { return }
             let error = note.userInfo?[AVCaptureSessionErrorKey] as? AVError
             self.sessionQueue.async {

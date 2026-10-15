@@ -63,10 +63,14 @@ xcodebuild -project FrameGuide.xcodeproj -scheme FrameGuide \
 - 用户核对 GitHub 账号免费额度、标准 runner 可用性、预算/付费阻断条件，并明确授权启动一次工作流。
 - 公共仓库的标准 GitHub-hosted runner 按官方规则可免费；私有仓库消耗套餐额度，超额可能收费，不能预先保证免费。参见 [GitHub Actions 计费](https://docs.github.com/en/billing/concepts/product-billing/github-actions)。
 
-`.github/workflows/unsigned-device.yml` 是本次实际使用的手动工作流；run38710533910在commit4661d946成功，详见CI_RESULTS.md。没有自动push/PR触发、用户签名凭据或API密钥。
+`.github/workflows/unsigned-device.yml` 是本次实际使用的手动工作流；run38714062223在commitec969558成功，详见CI_RESULTS.md。没有自动push/PR触发、用户签名凭据或API密钥。
 
 无签名CI成功不能证明Windows免费签名、Personal Team或设备安装可用。私有仓库、源码上传、两次CI及下载核验已完成，没有配置云端用户凭据、安装第三方签名工具或启用Xcode Cloud。
 
 ## 继续工作的授权边界
 
 本轮私有仓库上传与有费用前提的云端构建已按批准执行并完成。下一步需要单独授权选择和安装Windows签名工具及必要依赖，账号和手机由用户自行操作；不重复请求已完成的上传许可。API使用独立于免费构建/签名；没有密钥和明确照片确认就不调用，不启用收费模型。
+
+## 最新安装授权与阻塞
+
+用户已授权Sideloadly官方安装；已下载官方安装包但未运行。没有检测到官网所需web版iTunes/iCloud，额外依赖安装尚待明确同意；原生Windows界面控制不可用。上文尚需工具选择授权的历史描述已被本段更新。具体证据、约束及下一步见[WINDOWS_INSTALL_STATUS.md](WINDOWS_INSTALL_STATUS.md)。第三次修复构建及资料库版本1详见[CI_RESULTS.md](CI_RESULTS.md)，旧IPA已被替代。

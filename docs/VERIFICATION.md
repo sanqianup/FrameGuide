@@ -8,11 +8,11 @@
 | --- | --- | --- |
 | 独立源码与 Xcode 工程准备 | 已交付，待 Apple 工具链确认可编译 | 未访问或更改 GeekListing 等项目；完整清单见 FILE_MANIFEST.json |
 | 工程生成器执行 | 成功 | Node v24.16.0；已生成 project.pbxproj 和共享 scheme |
-| Windows Node 结构检查 | 17/17 通过 | `tools/verify-windows.ps1`；独立 OpenStep 解析、引用完整性、源码编译清单、测试目标、部署版本、CI/权限/网络边界；新增实时确认、单次取样、权限意图检查 |
+| Windows Node 结构检查 | 18/18 通过 | `tools/verify-windows.ps1`；独立 OpenStep 解析、引用完整性、源码编译清单、测试目标、部署版本、CI/权限/网络边界；新增实时确认、单次取样、权限意图检查 |
 | Windows XML 解析 | 3/3 通过 | Info.plist、PrivacyInfo.xcprivacy、FrameGuide.xcscheme；不是 Apple plutil 验证 |
-| Swift 核心 XCTest | 云端macOS 30/30通过 | CoreTests 9 + CloudContractTests 9 + LiveRequestTests 8 + CameraLifecycleTests 4；不是iOS真机功能测试 |
-| Apple SDK 类型检查/编译 | 云端设备构建通过 | Xcode16.4(16F6)、Swift6.1.2、iOS18.5 SDK；build commit 4661d946，见CI_RESULTS.md |
-| macOS 无签名设备构建/IPA | 成功并下载复核 | run38710533910；arm64、Mach-O平台iOS设备2、最低18.5.0、SDK18.5.0、无代码签名及描述文件；不是模拟器App |
+| Swift 核心 XCTest | 云端macOS 35/35通过 | CoreTests 9 + CloudContractTests 9 + LiveRequestTests 8 + CameraLifecycleTests 4 + AnalysisEpochTests 5；不是iOS真机功能测试 |
+| Apple SDK 类型检查/编译 | 云端设备构建通过 | Xcode16.4(16F6)、Swift6.1.2、iOS18.5 SDK；build commit ec969558，见CI_RESULTS.md |
+| macOS 无签名设备构建/IPA | 成功并下载复核 | run38714062223；arm64、Mach-O平台iOS设备2、最低18.5.0、SDK18.5.0、无代码签名及描述文件；不是模拟器App |
 | 模拟器构建/App-host XCTest | 未执行 | 本次执行纯Swift核心测试与iPhoneOS设备build，没有模拟器运行或App-host测试结果 |
 | iOS 18.5 / iPhone 16 Pro | 未安装、未验证 | 用户目标设备，不是测试设备记录 |
 | 其他 iOS 版本直到 iOS 27 | 未验证 | Deployment Target 18.5 仅表达最低版本，不证明兼容范围 |
@@ -29,7 +29,7 @@
 
 新增：取景请求在未配置/不稳定/不可用状态禁止准入、重复点击只接收一个采样意图、取样和明确确认缺一不可、镜头/旋转/移动/后台的代次失效、冻结确认超时、取消后保留限流、过时回调不释放新请求、采样/时钟异常、亮度差异累积失效、返回最大帧龄，以及权限请求去重、晚到授权不在后台启动、前台恢复和拒绝清理状态。
 
-纯 Swift `swift test --package-path Core` 已在云端macOS执行，30项通过。App-host XCTest 使用同一批测试但未执行。尚无真实传输 mock 的 HTTP 错误/取消单元测试；实际 URLSession 429/断网/重定向/超时行为必须按下表验证，不能把 envelope 合成测试等同于网络集成测试。
+纯 Swift `swift test --package-path Core` 已在云端macOS执行，35项通过。App-host XCTest 使用同一批测试但未执行。尚无真实传输 mock 的 HTTP 错误/取消单元测试；实际 URLSession 429/断网/重定向/超时行为必须按下表验证，不能把 envelope 合成测试等同于网络集成测试。
 
 ## 真机验收流程（全部待执行）
 

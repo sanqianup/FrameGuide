@@ -108,6 +108,12 @@
 			"path" = "App/UI/SettingsScreen.swift";
 			"sourceTree" = "<group>";
 		};
+		"D9756CE83FD036E5F7B1E438" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Core/Sources/CompositionCore/AnalysisEpoch.swift";
+			"sourceTree" = "<group>";
+		};
 		"43413788611B88FE4F7E87C6" = {
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
@@ -148,6 +154,12 @@
 			"isa" = "PBXFileReference";
 			"lastKnownFileType" = "sourcecode.swift";
 			"path" = "Core/Sources/CompositionCore/ToneRecipe.swift";
+			"sourceTree" = "<group>";
+		};
+		"CAEAEE962F4B76DF0791A1A9" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "Core/Tests/CompositionCoreTests/AnalysisEpochTests.swift";
 			"sourceTree" = "<group>";
 		};
 		"77C458C0FEE1C88E59A1BA8E" = {
@@ -227,6 +239,7 @@
 				"784841CEA574604D8CC7150F",
 				"0BF8FE5F4349E46F984B32AF",
 				"CA579B50FB18CA25DB768018",
+				"D9756CE83FD036E5F7B1E438",
 				"43413788611B88FE4F7E87C6",
 				"DF84678246917AB0CDCDD1CD",
 				"9142734B871A086145A9B3BE",
@@ -234,6 +247,7 @@
 				"1E2D08087F8AF358918F7951",
 				"88BF34C56FA0B3C14F65A3B6",
 				"A3713A145B603E3052105818",
+				"CAEAEE962F4B76DF0791A1A9",
 				"77C458C0FEE1C88E59A1BA8E",
 				"76E6438C35C779580F5AC044",
 				"64DB90E9180DDD1EEEA2C613",
@@ -312,6 +326,10 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "CA579B50FB18CA25DB768018";
 		};
+		"651CDE4421CFDE301F09136D" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "D9756CE83FD036E5F7B1E438";
+		};
 		"75943B890D107D02D8629D64" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "43413788611B88FE4F7E87C6";
@@ -361,6 +379,7 @@
 				"6D889C7E7610953DC91775AF",
 				"4F4C9D9CC1C39F58C8EB8960",
 				"AC3102CFDFE9D6BEC37E7F6A",
+				"651CDE4421CFDE301F09136D",
 				"75943B890D107D02D8629D64",
 				"DD531AB24BD90E51668D942C",
 				"97EB3D0233BBA80AFF4B7A00",
@@ -391,6 +410,10 @@
 			);
 			"runOnlyForDeploymentPostprocessing" = "0";
 		};
+		"779A417EDD2770065AAA3265" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "CAEAEE962F4B76DF0791A1A9";
+		};
 		"C912B1B2778D6B4B08637BC9" = {
 			"isa" = "PBXBuildFile";
 			"fileRef" = "77C458C0FEE1C88E59A1BA8E";
@@ -411,6 +434,7 @@
 			"isa" = "PBXSourcesBuildPhase";
 			"buildActionMask" = "2147483647";
 			"files" = (
+				"779A417EDD2770065AAA3265",
 				"C912B1B2778D6B4B08637BC9",
 				"8B5F49A0A88347EDE4580915",
 				"4FF4BA4BA64F00432A7B029F",

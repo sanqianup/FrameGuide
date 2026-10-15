@@ -301,7 +301,7 @@ final class CameraEngine: NSObject {
         }
         if !session.isRunning { session.startRunning() }
         refreshAnalysis()
-        emit(.state(session.isRunning ? "就绪 · 原图仅保存在本机" : "相机启动失败，请重试", ready: session.isRunning && !capturing))
+        emit(.state(session.isRunning ? "就绪 · App 不自动向模型上传照片" : "相机启动失败，请重试", ready: session.isRunning && !capturing))
     }
     private func emit(_ event: CameraEvent) {
         DispatchQueue.main.async { [weak self] in

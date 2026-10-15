@@ -10,7 +10,7 @@
     "DerivedData",
     "node_modules"
   ],
-  "count": 53,
+  "count": 55,
   "files": [
     {
       "path": ".github/workflows/unsigned-device.yml",
@@ -24,8 +24,8 @@
     },
     {
       "path": "App/Camera/CameraEngine.swift",
-      "sha256": "38b86697854f4b077fe5418c0286c182300ef81bc781054865b65d481cb7bbd1",
-      "bytes": 17044
+      "sha256": "6d41fc14dab42c7e7d1a7fa8223c421e63a64a08da6717c71ef805a68ff2c894",
+      "bytes": 17054
     },
     {
       "path": "App/Camera/CameraPreview.swift",
@@ -34,8 +34,8 @@
     },
     {
       "path": "App/Camera/FrameAnalyzer.swift",
-      "sha256": "4fd2d3ac8a2c87ba324261fb457aec7f9db0923e9448f0a83e621180a6ffa667",
-      "bytes": 9120
+      "sha256": "db1b97578a9953d4b0eeda699e007312b5b036426407aafad9e187e03267371f",
+      "bytes": 9527
     },
     {
       "path": "App/Camera/MotionMonitor.swift",
@@ -44,8 +44,8 @@
     },
     {
       "path": "App/CameraModel.swift",
-      "sha256": "51cc805941b014b208d899bea080df4cc6620cdf7c057ad1c2e001289ef9078b",
-      "bytes": 5050
+      "sha256": "4d0809ad5981c92f4375d47d301970195fe23f608d62d7d98d24d56aac288290",
+      "bytes": 5225
     },
     {
       "path": "App/Cloud/CloudSettings.swift",
@@ -114,8 +114,8 @@
     },
     {
       "path": "App/UI/SettingsScreen.swift",
-      "sha256": "aa8297c6785f422ac5c8bac2678d2eec1215784d19bdf0ffd9d137f34a80c120",
-      "bytes": 8163
+      "sha256": "b9ba29f7a6898fdb70a19ca8e76b441262a6cbd87a47579cbde9ce636a985782",
+      "bytes": 8328
     },
     {
       "path": "ci/macos-build.yml.disabled",
@@ -131,6 +131,11 @@
       "path": "Core/Package.swift",
       "sha256": "4ff9960bba584bbce8dff20bd93dcf6b201f1f02ccab68f9e51f7755e3210413",
       "bytes": 338
+    },
+    {
+      "path": "Core/Sources/CompositionCore/AnalysisEpoch.swift",
+      "sha256": "c83dd074d8e6b5f3eb7af34535069f2c072271b806bf3106c15e98f3fb27fe95",
+      "bytes": 849
     },
     {
       "path": "Core/Sources/CompositionCore/CameraStartIntent.swift",
@@ -168,6 +173,11 @@
       "bytes": 1717
     },
     {
+      "path": "Core/Tests/CompositionCoreTests/AnalysisEpochTests.swift",
+      "sha256": "004b43f26123b1f213e6e2d709806e5231afffc6529e106f9fb46d8e92c83fab",
+      "bytes": 2291
+    },
+    {
       "path": "Core/Tests/CompositionCoreTests/CameraLifecycleTests.swift",
       "sha256": "243b8a8f21f6f9f8689b2fa94c35dae395f6ecaaea22365383421ac2beb11bde",
       "bytes": 1527
@@ -189,8 +199,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "542ac4ccdb36a02ea1eda111d1d99c7deb5b6c87eee6498f69d3a2dbfb24d300",
-      "bytes": 6487
+      "sha256": "033aa2dac66b21100a2da463b88856232b73da19b3226bac1e9287900ab79916",
+      "bytes": 6867
     },
     {
       "path": "docs/BUILD_AND_INSTALL.md",
@@ -224,8 +234,8 @@
     },
     {
       "path": "FrameGuide.xcodeproj/project.pbxproj",
-      "sha256": "9f954d54f903095a1f1de121ea8c0822eac379b3339091752e3defc1e3e42344",
-      "bytes": 20933
+      "sha256": "7f05908e665197d44f421159facabce8178500bd94124e402c59616ac786a6d6",
+      "bytes": 21699
     },
     {
       "path": "FrameGuide.xcodeproj/xcshareddata/xcschemes/FrameGuide.xcscheme",
@@ -264,8 +274,8 @@
     },
     {
       "path": "tools/tests/project.test.mjs",
-      "sha256": "6f68aa13ca48c04c99d3782161d4995ef798f06815ec0a71e91c7e8b856e4334",
-      "bytes": 10855
+      "sha256": "3da06862c76030b8a07cde04205deb2a155842979026d473c13885a0ac0de086",
+      "bytes": 11730
     },
     {
       "path": "tools/verify-macos.sh",

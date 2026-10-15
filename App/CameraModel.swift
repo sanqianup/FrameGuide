@@ -25,7 +25,9 @@ final class CameraModel: ObservableObject {
     init() {
         motion.onStability = { [weak self] value in
             guard let self else { return }
-            self.engine.analyzer.setStable(value); self.syncLiveReadiness()
+            self.engine.analyzer.setStable(value)
+            if !value { self.analysis = nil }
+            self.syncLiveReadiness()
         }
         live.onSample = { [weak self] id in self?.engine.samplePreview(id: id) }
         live.onCancelSample = { [weak self] id in self?.engine.analyzer.cancelPreview(id: id) }
@@ -76,7 +78,9 @@ final class CameraModel: ObservableObject {
         case .lenses(let options, let selected):
             lenses = options; selectedLens = selected; analysis = nil
             live.setScene(lens: selected, rotation: rotation); syncLiveReadiness()
-        case .analysis(let result): analysis = result; PerformanceMonitor.shared.record(result)
+        case .analysis(let result):
+            guard screenActive, motion.stable, engine.analyzer.isCurrent(result.revision) else { return }
+            analysis = result; PerformanceMonitor.shared.record(result)
         case .failure(let text):
             message = text
             if pendingData == nil { saving = false; endBackgroundTask() }

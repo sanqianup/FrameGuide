@@ -29,10 +29,8 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     var onSceneChange: ((Int) -> Void)?
     var onPreview: ((UUID, Result<PreviewSample, PreviewSampleError>) -> Void)?
     private let lock = NSLock()
-    private var enabled = false
-    private var stable = false
+    private var validity = AnalysisEpoch()
     private var mirrored = false
-    private var generation = 0
     private var policy = AnalysisPolicy.make(heat: .nominal, lowPower: false, memoryPressure: false)
     private var guide = CompositionGuide() // accessed on queue only
     private var gate = FrameGate()
@@ -47,23 +45,22 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     private let snapshotContext = CIContext(options: [.cacheIntermediates: false])
     func requestPreview(id: UUID) {
         lock.lock()
-        guard enabled, stable, pendingPreview == nil else {
+        guard let revision = validity.ticket, pendingPreview == nil else {
             lock.unlock(); onPreview?(id, .failure(.unavailable)); return
         }
-        pendingPreview = (id, generation, ProcessInfo.processInfo.systemUptime + 2.5)
+        pendingPreview = (id, revision, ProcessInfo.processInfo.systemUptime + 2.5)
         lock.unlock()
     }
     func cancelPreview(id: UUID) {
         lock.lock(); if pendingPreview?.id == id { pendingPreview = nil }; lock.unlock()
     }
     func isCurrent(_ revision: Int) -> Bool {
-        lock.lock(); defer { lock.unlock() }; return enabled && generation == revision
+        lock.lock(); defer { lock.unlock() }; return validity.accepts(revision)
     }
 
     func configure(enabled: Bool, mirrored: Bool, policy: AnalysisPolicy) {
         lock.lock()
-        self.enabled = enabled; self.mirrored = mirrored; self.policy = policy
-        generation += 1
+        validity.configure(enabled: enabled); self.mirrored = mirrored; self.policy = policy
         let cancelled = pendingPreview?.id; pendingPreview = nil
         lock.unlock()
         if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
@@ -73,7 +70,15 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         }
     }
     func setStable(_ value: Bool) {
-        lock.lock(); stable = value; lock.unlock()
+        lock.lock()
+        let changed = validity.setStable(value)
+        let cancelled = changed ? pendingPreview?.id : nil
+        if changed { pendingPreview = nil }
+        lock.unlock()
+        if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
+        if changed {
+            queue.async { self.guide.reset(); self.gate.reset(); self.lastAnalysis = nil }
+        }
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
@@ -84,15 +89,15 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
             measuredFPS = Double(callbacks) / (time - fpsStart); callbacks = 0; fpsStart = time
         }
         lock.lock()
-        let active = enabled, isStable = stable, mirror = mirrored, revision = generation, p = policy
+        let ticket = validity.ticket, mirror = mirrored, p = policy
         lock.unlock()
-        guard active, let buffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        guard let revision = ticket, let buffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         if sceneGate.admit(now: time, interval: 0.2), fingerprint.changed(luminance(buffer)) {
             onSceneChange?(revision)
         }
         lock.lock(); let pending = pendingPreview; pendingPreview = nil; lock.unlock()
         if let pending {
-            if pending.revision != revision || !isStable || time > pending.deadline {
+            if pending.revision != revision || !isCurrent(revision) || time > pending.deadline {
                 onPreview?(pending.id, .failure(.invalidated))
             } else {
                 autoreleasepool {
@@ -134,8 +139,10 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
                 source = "本帧分析不可用"
             }
             sequence += 1
-            let advice = guide.update(subject: subject, stable: isStable, now: now).cameraAdvice(mirrored: mirror)
-            lock.lock(); let valid = enabled && generation == revision; lock.unlock()
+            // Never let an obsolete inference mutate the guide or publish a direction.
+            guard isCurrent(revision) else { return }
+            let advice = guide.update(subject: subject, stable: true, now: now).cameraAdvice(mirrored: mirror)
+            lock.lock(); let valid = validity.accepts(revision); lock.unlock()
             let interval = lastAnalysis.map { (now - $0) * 1000 }
             lastAnalysis = now
             if valid { onResult?(AnalysisResult(subject: subject, guidance: advice, source: source, revision: revision,

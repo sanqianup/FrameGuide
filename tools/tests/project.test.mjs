@@ -156,7 +156,7 @@ test('manual live UI exposes a frozen-frame confirmation and a stop action, neve
 });
 test('live preview sampling is one-shot, metadata-free and generation-checked', () => {
   const analyzer = contents('App/Camera/FrameAnalyzer.swift');
-  assert.match(analyzer, /pendingPreview = \(id, generation,/);
+  assert.match(analyzer, /pendingPreview = \(id, revision,/);
   assert.match(analyzer, /let pending = pendingPreview; pendingPreview = nil/);
   assert.match(analyzer, /CGImageDestinationAddImage\(target, cg,/);
   assert.doesNotMatch(analyzer, /CGImageSourceCopyProperties|CGImageDestinationAddImageFromSource/);
@@ -169,4 +169,16 @@ test('permission lifecycle uses the tested intent and selected-lens taps cannot 
   assert.match(camera, /permissionDeniedOnQueue/);
   assert.match(contents('App/CameraModel.swift'), /guard screenActive, canCapture, id != selectedLens/);
   assert.match(contents('Core/Tests/CompositionCoreTests/CameraLifecycleTests.swift'), /testLatePermissionGrantDoesNotStartInBackground/);
+});
+test('motion invalidation is wired through frame completion, UI handoff and immediate display clearing', () => {
+  const analyzer = contents('App/Camera/FrameAnalyzer.swift');
+  assert.match(analyzer, /private var validity = AnalysisEpoch\(\)/);
+  assert.match(analyzer, /let changed = validity\.setStable\(value\)/);
+  assert.match(analyzer, /let ticket = validity\.ticket/);
+  assert.match(analyzer, /guard isCurrent\(revision\) else \{ return \}/);
+  assert.match(analyzer, /let valid = validity\.accepts\(revision\)/);
+  const model = contents('App/CameraModel.swift');
+  assert.match(model, /if !value \{ self\.analysis = nil \}/);
+  assert.match(model, /guard screenActive, motion\.stable, engine\.analyzer\.isCurrent\(result\.revision\)/);
+  assert.match(contents('App/Camera/CameraEngine.swift'), /if case \.analysis\(let result\).*isCurrent\(result\.revision\)/);
 });

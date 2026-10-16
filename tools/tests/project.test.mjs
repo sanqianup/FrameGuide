@@ -178,7 +178,41 @@ test('motion invalidation is wired through frame completion, UI handoff and imme
   assert.match(analyzer, /guard isCurrent\(revision\) else \{ return \}/);
   assert.match(analyzer, /let valid = validity\.accepts\(revision\)/);
   const model = contents('App/CameraModel.swift');
-  assert.match(model, /if !value \{ self\.analysis = nil \}/);
+  assert.match(model, /if !value \{ self\.analysis = nil; self\.clearGuideUI/);
   assert.match(model, /guard screenActive, motion\.stable, engine\.analyzer\.isCurrent\(result\.revision\)/);
   assert.match(contents('App/Camera/CameraEngine.swift'), /if case \.analysis\(let result\).*isCurrent\(result\.revision\)/);
+});
+
+test('selected-region tracking is local, throttled separately and clears stale targets', () => {
+  const analyzer = contents('App/Camera/FrameAnalyzer.swift');
+  assert.match(analyzer, /VNTrackObjectRequest\(detectedObjectObservation:/);
+  assert.match(analyzer, /trackingLevel = \.fast/);
+  assert.match(analyzer, /interval: p\.trackingInterval/);
+  assert.match(analyzer, /decisionGate\.admit\(now: now, interval: policy\.interval\)/);
+  assert.match(analyzer, /observation\.confidence >= 0\.65/);
+  assert.match(analyzer, /if changed \{ selection = nil \}/);
+  const model = contents('App/CameraModel.swift');
+  assert.match(model, /freshness\.accept\(captured: result\.capturedAt/);
+  assert.match(model, /freshness\.expired/);
+  assert.match(model, /guard result\.guided != nil else/);
+  assert.match(model, /case \.trackingLost/);
+  assert.match(model, /已选择新主体，旧云端建议已清除/);
+  assert.match(model, /主体追踪丢失，旧云端建议已清除/);
+});
+test('target overlay uses displayed sensor bounds and ignores letterbox taps', () => {
+  const preview = contents('App/Camera/CameraPreview.swift');
+  assert.match(preview, /imageRect\.contains\(point\)/);
+  assert.match(preview, /target\.path = nil/);
+  assert.match(preview, /guided\.aligned \? UIColor\.systemGreen : UIColor\.systemCyan/);
+  assert.match(preview, /if selecting/);
+  assert.match(contents('App/UI/CameraScreen.swift'), /Button\("退出引导"\)/);
+});
+test('zoom requires explicit user action and local looks reuse reversible renderer', () => {
+  const camera = contents('App/Camera/CameraEngine.swift');
+  assert.match(camera, /DigitalZoom\.requested/);
+  const model = contents('App/CameraModel.swift');
+  assert.match(model, /func applySuggestedZoom\(\)/);
+  assert.match(model, /engine\.zoom\(by: factor\)/);
+  assert.doesNotMatch(contents('App/Camera/FrameAnalyzer.swift'), /videoZoomFactor|\.zoom\(/);
+  assert.match(contents('App/UI/LibraryScreen.swift'), /model\.apply\(look\.recipe\)/);
 });

@@ -30,8 +30,9 @@ struct CameraScreen: View {
     private var preview: some View {
         ZStack(alignment: .top) {
             CameraPreview(session: model.engine.session, mirrored: model.front, subject: model.analysis?.subject,
+                guided: model.analysis?.guided, selecting: model.selectionArmed,
                 onRotation: { angle, quarter in model.setRotation(angle, quarter: quarter) },
-                onFocus: { model.engine.focus(at: $0) })
+                onFocus: { model.engine.focus(at: $0) }, onSelect: { model.selectSubject(at: $0) })
             VStack(spacing: 10) {
                 HStack {
                     Text("取景").font(.headline)
@@ -41,8 +42,16 @@ struct CameraScreen: View {
                 LevelIndicator(motion: model.motion)
                 Spacer()
                 VStack(spacing: 5) {
-                    Text(model.analysis?.guidance.text ?? "稳住手机，观察主体")
+                    Text(model.guidedMode || model.selectionArmed ? model.guideStatus : (model.analysis?.guidance.text ?? model.guideStatus))
                         .font(.headline).multilineTextAlignment(.center)
+                    if let guide = model.analysis?.guided {
+                        Text(guide.sizeText).font(.subheadline)
+                        Text("黄色实线：当前主体 · 青色虚线：目标 · 绿色：稳定到位")
+                            .font(.caption2)
+                    }
+                    if let look = model.analysis?.look {
+                        Text("拍后本地滤镜建议：\(look.title) · 尚未应用").font(.caption)
+                    }
                     Text(model.analysis?.source ?? "分析在后台限频执行")
                         .font(.caption).foregroundStyle(.secondary)
                 }.padding(12).background(.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 12))
@@ -53,6 +62,22 @@ struct CameraScreen: View {
         VStack(spacing: 12) {
             Text(model.saving ? "正在保存原图…" : model.status).font(.caption).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            HStack {
+                Button(model.selectionArmed ? "重新点选" : "点选主体构图") { model.armSelection() }
+                    .disabled(!model.canCapture)
+                if model.guidedMode || model.selectionArmed {
+                    Button("退出引导") { model.exitGuidance() }
+                }
+                Spacer(minLength: 4)
+                Text(String(format: "本镜头 %.1f×", model.zoomRatio)).monospacedDigit()
+                if model.zoomRatio > 1.01 { Button("还原1×") { model.resetZoom() }.disabled(!model.canCapture) }
+            }.font(.caption).buttonStyle(.bordered)
+            if let factor = model.analysis?.guided?.relativeZoom {
+                Button(String(format: "应用数字放大 %.1f×当前画幅", factor)) { model.applySuggestedZoom() }
+                    .font(.caption).disabled(!model.canCapture || !model.motion.stable)
+            }
+            Text("仅二维画面引导，不测量距离或三维机位；放大需手动确认")
+                .font(.caption2).foregroundStyle(.secondary)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(model.lenses) { lens in

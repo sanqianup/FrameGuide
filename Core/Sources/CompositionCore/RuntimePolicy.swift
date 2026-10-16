@@ -5,6 +5,11 @@ public struct AnalysisPolicy: Equatable, Sendable {
     public let interval: Double
     public let saliencyEnabled: Bool
     public let mayCapture: Bool
+    /// Fast local ROI tracking stays separate from slower detection/composition decisions.
+    public var trackingInterval: Double {
+        guard mayCapture else { return .infinity }
+        return interval >= 1 ? 0.5 : (interval >= 0.65 ? 0.2 : 0.125)
+    }
     public static func make(heat: Heat, lowPower: Bool, memoryPressure: Bool) -> Self {
         switch heat {
         case .critical: return Self(interval: .infinity, saliencyEnabled: false, mayCapture: false)

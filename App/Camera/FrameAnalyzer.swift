@@ -19,6 +19,9 @@ struct AnalysisResult {
     let durationMS: Double
     let intervalMS: Double?
     let deliveredFPS: Double?
+    var guided: GuidedSnapshot? = nil
+    var look: LocalLook? = nil
+    var capturedAt = 0.0
 }
 
 /// Delegate work runs on one utility queue. Late buffers are dropped by AVFoundation.
@@ -28,6 +31,7 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     var onResult: ((AnalysisResult) -> Void)?
     var onSceneChange: ((Int) -> Void)?
     var onPreview: ((UUID, Result<PreviewSample, PreviewSampleError>) -> Void)?
+    var onTrackingLost: ((Int) -> Void)?
     private let lock = NSLock()
     private var validity = AnalysisEpoch()
     private var mirrored = false
@@ -43,6 +47,38 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     private var sceneGate = FrameGate()
     private var fingerprint = SceneFingerprint()
     private let snapshotContext = CIContext(options: [.cacheIntermediates: false])
+    private var selection: (x: Double, y: Double)? // guarded by lock
+    private var tracker: VNTrackObjectRequest? // analyzer queue only
+    private var trackerRevision = -1
+    private var sequenceHandler = VNSequenceRequestHandler()
+    private var trackingGate = FrameGate()
+    private var decisionGate = FrameGate()
+    private var coach = GuidedComposition()
+    private var coaching: GuidedSnapshot?
+    private var selectedPerson = false
+    private var selectedLook = LocalLook.natural
+
+    func selectSubject(x: Double, y: Double) {
+        guard SubjectSelection.seed(x: x, y: y, candidates: []) != nil else { return }
+        lock.lock()
+        guard validity.ticket != nil else { lock.unlock(); return }
+        validity.configure(enabled: validity.enabled)
+        selection = (x, y)
+        let cancelled = pendingPreview?.id; pendingPreview = nil
+        lock.unlock()
+        if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
+    }
+    func clearSelection() {
+        lock.lock()
+        selection = nil; validity.configure(enabled: validity.enabled)
+        let cancelled = pendingPreview?.id; pendingPreview = nil
+        lock.unlock()
+        if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
+    }
+    private func resetTracking() {
+        tracker = nil; trackerRevision = -1; sequenceHandler = VNSequenceRequestHandler()
+        trackingGate.reset(); decisionGate.reset(); coach.reset(); coaching = nil
+    }
     func requestPreview(id: UUID) {
         lock.lock()
         guard let revision = validity.ticket, pendingPreview == nil else {
@@ -61,23 +97,26 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
     func configure(enabled: Bool, mirrored: Bool, policy: AnalysisPolicy) {
         lock.lock()
         validity.configure(enabled: enabled); self.mirrored = mirrored; self.policy = policy
+        selection = nil
         let cancelled = pendingPreview?.id; pendingPreview = nil
         lock.unlock()
         if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
         queue.async {
             self.guide.reset(); self.gate.reset(); self.sequence = 0; self.lastAnalysis = nil
             self.sceneGate.reset(); self.fingerprint.reset(); self.snapshotContext.clearCaches()
+            self.resetTracking()
         }
     }
     func setStable(_ value: Bool) {
         lock.lock()
         let changed = validity.setStable(value)
+        if changed { selection = nil }
         let cancelled = changed ? pendingPreview?.id : nil
         if changed { pendingPreview = nil }
         lock.unlock()
         if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
         if changed {
-            queue.async { self.guide.reset(); self.gate.reset(); self.lastAnalysis = nil }
+            queue.async { self.guide.reset(); self.gate.reset(); self.lastAnalysis = nil; self.resetTracking() }
         }
     }
 
@@ -90,6 +129,7 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
         }
         lock.lock()
         let ticket = validity.ticket, mirror = mirrored, p = policy
+        let selected = selection
         lock.unlock()
         guard let revision = ticket, let buffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         if sceneGate.admit(now: time, interval: 0.2), fingerprint.changed(luminance(buffer)) {
@@ -108,6 +148,12 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
                 }
             }
         }
+        if let selected {
+            guard trackingGate.admit(now: time, interval: p.trackingInterval) else { return }
+            autoreleasepool { track(buffer, point: selected, mirror: mirror, revision: revision, policy: p, now: time) }
+            return
+        }
+        if tracker != nil { resetTracking() }
         guard gate.admit(now: time, interval: p.interval) else { return }
         autoreleasepool {
             let now = ProcessInfo.processInfo.systemUptime
@@ -146,8 +192,63 @@ final class FrameAnalyzer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegat
             let interval = lastAnalysis.map { (now - $0) * 1000 }
             lastAnalysis = now
             if valid { onResult?(AnalysisResult(subject: subject, guidance: advice, source: source, revision: revision,
-                durationMS: (ProcessInfo.processInfo.systemUptime - now) * 1000, intervalMS: interval, deliveredFPS: measuredFPS)) }
+                durationMS: (ProcessInfo.processInfo.systemUptime - now) * 1000, intervalMS: interval, deliveredFPS: measuredFPS,
+                capturedAt: time)) }
         }
+    }
+
+    private func track(_ buffer: CVPixelBuffer, point: (x: Double, y: Double), mirror: Bool,
+                       revision: Int, policy: AnalysisPolicy, now: Double) {
+        let started = ProcessInfo.processInfo.systemUptime
+        do {
+            if trackerRevision != revision {
+                resetTracking()
+                _ = trackingGate.admit(now: now, interval: 0)
+                // Detection only seeds a user-selected region, never silently switches identity.
+                let faces = VNDetectFaceRectanglesRequest(), people = VNDetectHumanRectanglesRequest()
+                try VNImageRequestHandler(cvPixelBuffer: buffer, orientation: .up).perform([faces, people])
+                let candidates = (faces.results ?? []).map { makeSubject($0.boundingBox, mirror: mirror, confidence: Double($0.confidence)) }
+                    + (people.results ?? []).map { makeSubject($0.boundingBox, mirror: mirror, confidence: Double($0.confidence)) }
+                guard let seed = SubjectSelection.seed(x: point.x, y: point.y, candidates: candidates), isCurrent(revision) else { return }
+                selectedPerson = candidates.contains(seed)
+                let raw = CGRect(x: mirror ? 1 - seed.x - seed.width : seed.x,
+                                 y: 1 - seed.y - seed.height, width: seed.width, height: seed.height)
+                tracker = VNTrackObjectRequest(detectedObjectObservation: VNDetectedObjectObservation(boundingBox: raw))
+                tracker?.trackingLevel = .fast
+                trackerRevision = revision; coach.begin(seed)
+            }
+            guard let tracker else { return }
+            try sequenceHandler.perform([tracker], on: buffer, orientation: .up)
+            guard let observation = tracker.results?.first as? VNDetectedObjectObservation,
+                  observation.confidence >= 0.65, isCurrent(revision) else { loseTracking(revision); return }
+            let subject = makeSubject(observation.boundingBox, mirror: mirror, confidence: Double(observation.confidence))
+            guard subject.isValid else { loseTracking(revision); return }
+            tracker.inputObservation = observation
+            if decisionGate.admit(now: now, interval: policy.interval) {
+                coaching = coach.update(subject, stable: true, now: now)
+                let samples = luminance(buffer)
+                selectedLook = .suggest(person: selectedPerson,
+                                        luminance: samples.isEmpty ? 0 : samples.reduce(0, +) / Double(samples.count))
+            }
+            guard isCurrent(revision) else { return }
+            guard ProcessInfo.processInfo.systemUptime - now <= 1.2 else { loseTracking(revision); return }
+            let interval = lastAnalysis.map { (now - $0) * 1000 }; lastAnalysis = now
+            onResult?(AnalysisResult(subject: subject, guidance: .steady,
+                source: "本机 Vision 区域追踪 · 低频构图规则 · 非身份识别", revision: revision,
+                durationMS: (ProcessInfo.processInfo.systemUptime - started) * 1000,
+                intervalMS: interval, deliveredFPS: measuredFPS, guided: coaching, look: selectedLook, capturedAt: now))
+        } catch { loseTracking(revision) }
+    }
+    private func loseTracking(_ revision: Int) {
+        lock.lock()
+        guard validity.accepts(revision) else { lock.unlock(); return }
+        selection = nil; validity.configure(enabled: validity.enabled)
+        let current = validity.revision
+        let cancelled = pendingPreview?.id; pendingPreview = nil
+        lock.unlock()
+        resetTracking()
+        if let cancelled { onPreview?(cancelled, .failure(.invalidated)) }
+        onTrackingLost?(current)
     }
 
     private func makeSubject(_ box: CGRect, mirror: Bool, confidence: Double) -> Subject {

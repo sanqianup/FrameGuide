@@ -1,5 +1,7 @@
 # 云端构建与设备 IPA 记录
 
+2026-10-16：当前源码新增点选区域追踪与构图引导，21项Windows结构检查通过。新增后46项Swift测试和设备构建尚未运行；浏览器连接关闭导致免费预算核验及手动CI派发受阻。下文运行#1-#3及IPA全部为历史版本，不包含本轮新功能，旧Release保留。没有重新打包旧二进制冒充新版本。
+
 仓库：[sanqianup/FrameGuide](https://github.com/sanqianup/FrameGuide)，已核验保持 private。检查日期2026-10-15。
 
 | 运行 | Commit | 结果 |

@@ -10,7 +10,7 @@
     "DerivedData",
     "node_modules"
   ],
-  "count": 56,
+  "count": 59,
   "files": [
     {
       "path": ".github/workflows/unsigned-device.yml",
@@ -24,18 +24,18 @@
     },
     {
       "path": "App/Camera/CameraEngine.swift",
-      "sha256": "6d41fc14dab42c7e7d1a7fa8223c421e63a64a08da6717c71ef805a68ff2c894",
-      "bytes": 17054
+      "sha256": "3a30d11bbd7b0329ed16b290c8ada2900dda19fbef62cabb7c9108bec43c99b5",
+      "bytes": 18432
     },
     {
       "path": "App/Camera/CameraPreview.swift",
-      "sha256": "84be7e50f49e33a63c6d25fbda1501338a5d4ea3a46575bf836d7c6e5eafb791",
-      "bytes": 4176
+      "sha256": "e1f64e88e393d52f77298e6f58cbe0259ccf101b5a57a7cbc3c5788885e6f71b",
+      "bytes": 5680
     },
     {
       "path": "App/Camera/FrameAnalyzer.swift",
-      "sha256": "db1b97578a9953d4b0eeda699e007312b5b036426407aafad9e187e03267371f",
-      "bytes": 9527
+      "sha256": "08820895e7543d89f42a18b81b6ed885776eb65c6523ebe0532ac4388026ef74",
+      "bytes": 15359
     },
     {
       "path": "App/Camera/MotionMonitor.swift",
@@ -44,8 +44,8 @@
     },
     {
       "path": "App/CameraModel.swift",
-      "sha256": "4d0809ad5981c92f4375d47d301970195fe23f608d62d7d98d24d56aac288290",
-      "bytes": 5225
+      "sha256": "9ffa5b1760502366eb6e756208e39760523668a70d328e630463e318c4a89768",
+      "bytes": 9426
     },
     {
       "path": "App/Cloud/CloudSettings.swift",
@@ -99,13 +99,13 @@
     },
     {
       "path": "App/UI/CameraScreen.swift",
-      "sha256": "0183d3e440805d7fb64f4ea9fc794088b877b1eb214aa8fca7cf3c84f008cc11",
-      "bytes": 5519
+      "sha256": "db3c116c64ad304047ba11c13a46cf23d8e609bf063b105cfcc1a824796ed216",
+      "bytes": 7253
     },
     {
       "path": "App/UI/LibraryScreen.swift",
-      "sha256": "5777c4083bac49a29b60d41804698b9242fafdc0963e3e34f647aa8bbcfc3c66",
-      "bytes": 6477
+      "sha256": "bfe13aa81414236f9240d61e01a2286f58f2e471057eaac455c12a4aa9d0c09d",
+      "bytes": 6691
     },
     {
       "path": "App/UI/LiveAdvicePanel.swift",
@@ -153,6 +153,11 @@
       "bytes": 4597
     },
     {
+      "path": "Core/Sources/CompositionCore/GuidedComposition.swift",
+      "sha256": "8d330483a20fcdc47131297b98aa0692bbb9b428e1f60960558efdcff1075219",
+      "bytes": 6043
+    },
+    {
       "path": "Core/Sources/CompositionCore/LiveRequestGate.swift",
       "sha256": "5b3914e4013070c358d76987b58ffe9f9cf4cbf628e42437a357e118ca7e8a89",
       "bytes": 3550
@@ -164,8 +169,8 @@
     },
     {
       "path": "Core/Sources/CompositionCore/RuntimePolicy.swift",
-      "sha256": "3d9293ea112c0634905c9ea6e07aaa77323f32e30b60f7eb6458809c42edc0c3",
-      "bytes": 2016
+      "sha256": "0c6573194c0af0a2a14280629d2bda367cd09d9b53e471a784498447e62751e3",
+      "bytes": 2277
     },
     {
       "path": "Core/Sources/CompositionCore/ToneRecipe.swift",
@@ -193,6 +198,11 @@
       "bytes": 3794
     },
     {
+      "path": "Core/Tests/CompositionCoreTests/GuidedCompositionTests.swift",
+      "sha256": "8bbd325537301e63119ae363812064d4b01ed653681417f7ecdc71d161734872",
+      "bytes": 5878
+    },
+    {
       "path": "Core/Tests/CompositionCoreTests/LiveRequestTests.swift",
       "sha256": "b7d57d3473a7cddd628241184d8e813af1c3b4d00fb032885df80c3565053f88",
       "bytes": 3564
@@ -209,8 +219,8 @@
     },
     {
       "path": "docs/CI_RESULTS.md",
-      "sha256": "703b7c8aeb3b743a6bbba44c935f9834aa290a8ac21260f8824e3644953ae656",
-      "bytes": 4312
+      "sha256": "cd0668ed1b93f01e97be96ebd61ede053d6385a4d268c07826c54dcc71795502",
+      "bytes": 4681
     },
     {
       "path": "docs/CLOUD.md",
@@ -223,9 +233,14 @@
       "bytes": 3053
     },
     {
+      "path": "docs/GUIDED_COMPOSITION.md",
+      "sha256": "6299f3eb796042fa67fa62968dedfe666a02b6ba9ed8e031f79da94c59ed748b",
+      "bytes": 4296
+    },
+    {
       "path": "docs/VERIFICATION.md",
-      "sha256": "1c800ced21ae3dfa535733fe52e4bc6d07c1d81003d1f5b1a7da37850c5f7575",
-      "bytes": 9235
+      "sha256": "0f10c5094c4301aee2886644c49beeeae6185ab8e091b178a8cc23128ee2d575",
+      "bytes": 9792
     },
     {
       "path": "docs/WINDOWS_INSTALL_STATUS.md",
@@ -234,13 +249,13 @@
     },
     {
       "path": "docs/windows-checks.txt",
-      "sha256": "2897c033c7a6ba7889945e141f9fec5235fe50957ccf324b821f70fcfc16c51b",
-      "bytes": 649
+      "sha256": "804c60e701ccc13aed2f8ec78a1c2c8f33a7bed7cfa9604710ebbd504766d8c5",
+      "bytes": 4740
     },
     {
       "path": "FrameGuide.xcodeproj/project.pbxproj",
-      "sha256": "7f05908e665197d44f421159facabce8178500bd94124e402c59616ac786a6d6",
-      "bytes": 21699
+      "sha256": "f0acb5dc82ff3fb6048c1c4dcee70f7543d04772e4ee0a49588b07eb8bdf6ef3",
+      "bytes": 22473
     },
     {
       "path": "FrameGuide.xcodeproj/xcshareddata/xcschemes/FrameGuide.xcscheme",
@@ -254,8 +269,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "06553dca12980b709f34ff5715e5d0a30877d731aebe43e4b9ea26371dd5a257",
-      "bytes": 5412
+      "sha256": "38a22631efb649074044bada19c95c5af10bda9924d6e71c8b103ec8c03ae2c2",
+      "bytes": 6013
     },
     {
       "path": "tools/create-manifest.mjs",
@@ -279,8 +294,8 @@
     },
     {
       "path": "tools/tests/project.test.mjs",
-      "sha256": "3da06862c76030b8a07cde04205deb2a155842979026d473c13885a0ac0de086",
-      "bytes": 11730
+      "sha256": "a8ac3598698150e365e4b0e2066982f13e8a5fb1199f19cf87b650727ac1694e",
+      "bytes": 13752
     },
     {
       "path": "tools/verify-macos.sh",

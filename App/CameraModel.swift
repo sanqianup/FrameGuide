@@ -15,6 +15,13 @@ final class CameraModel: ObservableObject {
     @Published var saving = false
     @Published var message: String?
     @Published var hasUnsavedOriginal = false
+    @Published var selectionArmed = false
+    @Published var guidedMode = false
+    @Published var guideStatus = "点选主体后，显示本地构图目标"
+    @Published var zoomRatio = 1.0
+    private var freshness = TrackingFreshness()
+    private var trackingWatchdog: Task<Void, Never>?
+    private var wasAligned = false
     private var pendingData: Data?
     private var backgroundTask = UIBackgroundTaskIdentifier.invalid
     private var screenActive = false
@@ -26,7 +33,7 @@ final class CameraModel: ObservableObject {
         motion.onStability = { [weak self] value in
             guard let self else { return }
             self.engine.analyzer.setStable(value)
-            if !value { self.analysis = nil }
+            if !value { self.analysis = nil; self.clearGuideUI("移动中 · 稳定后请重新点选主体") }
             self.syncLiveReadiness()
         }
         live.onSample = { [weak self] id in self?.engine.samplePreview(id: id) }
@@ -36,11 +43,26 @@ final class CameraModel: ObservableObject {
     func active(_ value: Bool) {
         screenActive = value
         UIApplication.shared.isIdleTimerDisabled = value
-        if value { engine.start(); motion.start() }
-        else { engine.stop(); motion.stop(); analysis = nil; ready = false }
+        if value {
+            engine.start(); motion.start()
+            if trackingWatchdog == nil {
+                trackingWatchdog = Task { [weak self] in
+                    while !Task.isCancelled {
+                        try? await Task.sleep(nanoseconds: 300_000_000)
+                        guard !Task.isCancelled else { return }
+                        self?.expireTracking()
+                    }
+                }
+            }
+        } else {
+            trackingWatchdog?.cancel(); trackingWatchdog = nil
+            engine.stop(); motion.stop(); analysis = nil; ready = false; clearGuideUI("取景暂停")
+        }
         syncLiveReadiness()
     }
     func setRotation(_ angle: CGFloat, quarter: Int) {
+        guard rotation != Int(angle) else { return }
+        exitGuidance(reason: "方向变化 · 请重新点选主体")
         rotation = Int(angle)
         live.setScene(lens: selectedLens, rotation: rotation)
         engine.setRotation(angle); motion.setQuarterTurns(quarter)
@@ -49,6 +71,7 @@ final class CameraModel: ObservableObject {
     func switchLens(_ id: String) {
         guard screenActive, canCapture, id != selectedLens, lenses.contains(where: { $0.id == id }) else { return }
         live.invalidate("正在切换镜头，旧建议已清除", lens: id, rotation: rotation)
+        analysis = nil; clearGuideUI("镜头切换 · 请重新点选主体"); engine.analyzer.clearSelection()
         ready = false; syncLiveReadiness(); engine.switchLens(id)
     }
     func capture() {
@@ -63,6 +86,42 @@ final class CameraModel: ObservableObject {
         }
         engine.capture()
     }
+    func armSelection() {
+        guard canCapture, motion.stable else { guideStatus = "先稳住手机，再点选主体"; return }
+        exitGuidance(reason: "轻点画面中的主体 · 同时对焦")
+        selectionArmed = true
+    }
+    func selectSubject(at point: CGPoint) {
+        guard selectionArmed, canCapture, motion.stable else { return }
+        live.invalidate("已选择新主体，旧云端建议已清除")
+        analysis = nil; selectionArmed = false; guidedMode = true; wasAligned = false
+        freshness = TrackingFreshness()
+        let now = ProcessInfo.processInfo.systemUptime
+        freshness.accept(captured: now, now: now)
+        guideStatus = "本机区域追踪准备中 · 请稳住"
+        engine.analyzer.selectSubject(x: Double(point.x), y: Double(point.y))
+    }
+    func exitGuidance(reason: String = "已退出构图引导 · 可自由拍摄") {
+        engine.analyzer.clearSelection(); analysis = nil; clearGuideUI(reason)
+        live.invalidate("构图状态已变化，旧云端建议已清除")
+    }
+    func applySuggestedZoom() {
+        guard canCapture, motion.stable, guidedMode, let factor = analysis?.guided?.relativeZoom else { return }
+        exitGuidance(reason: "已请求数字放大 · 稳定后请重新选主体")
+        engine.zoom(by: factor)
+    }
+    func resetZoom() {
+        guard canCapture, zoomRatio > 1.01 else { return }
+        exitGuidance(reason: "已请求还原画幅 · 请重新选主体")
+        engine.zoom(by: 1 / zoomRatio)
+    }
+    private func clearGuideUI(_ text: String) {
+        selectionArmed = false; guidedMode = false; wasAligned = false; guideStatus = text
+    }
+    private func expireTracking() {
+        guard guidedMode, freshness.expired(now: ProcessInfo.processInfo.systemUptime) else { return }
+        exitGuidance(reason: "追踪已过期 · 请重新点选主体")
+    }
     func retrySave() { guard !saving, pendingData != nil else { return }; persistPending() }
     func loadRecords() async {
         do { records = try await PhotoStore.shared.records() }
@@ -72,7 +131,7 @@ final class CameraModel: ObservableObject {
         switch event {
         case .state(let text, let enabled):
             status = text; ready = enabled
-            if !enabled { analysis = nil }
+            if !enabled { analysis = nil; clearGuideUI("相机暂停 · 请重新点选主体") }
             else { live.setScene(lens: selectedLens, rotation: rotation) }
             syncLiveReadiness()
         case .lenses(let options, let selected):
@@ -80,6 +139,19 @@ final class CameraModel: ObservableObject {
             live.setScene(lens: selected, rotation: rotation); syncLiveReadiness()
         case .analysis(let result):
             guard screenActive, motion.stable, engine.analyzer.isCurrent(result.revision) else { return }
+            if guidedMode {
+                guard result.guided != nil else {
+                    exitGuidance(reason: "分析配置变化 · 请重新点选主体"); return
+                }
+                guard freshness.accept(captured: result.capturedAt, now: ProcessInfo.processInfo.systemUptime) else {
+                    exitGuidance(reason: "追踪返回过期 · 请重新点选主体"); return
+                }
+                if let guide = result.guided {
+                    guideStatus = guide.aligned ? "构图到位 · 可以拍摄（水平独立校正）" : guide.direction.text
+                    if guide.aligned && !wasAligned { UINotificationFeedbackGenerator().notificationOccurred(.success) }
+                    wasAligned = guide.aligned
+                }
+            }
             analysis = result; PerformanceMonitor.shared.record(result)
         case .failure(let text):
             message = text
@@ -88,6 +160,11 @@ final class CameraModel: ObservableObject {
         case .captured(let bytes): pendingData = bytes; persistPending()
         case .sceneChanged: live.sceneChanged()
         case .preview(let id, let result): live.receive(id: id, result: result)
+        case .trackingLost(let revision):
+            guard engine.analyzer.isCurrent(revision) else { return }
+            analysis = nil; clearGuideUI("主体追踪丢失 · 请重新点选")
+            live.invalidate("主体追踪丢失，旧云端建议已清除")
+        case .zoom(let value): zoomRatio = value
         }
     }
     private func persistPending() {

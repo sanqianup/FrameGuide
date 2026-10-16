@@ -42,7 +42,11 @@ struct PhotoReviewScreen: View {
                 } else { ProgressView().frame(height: 220) }
                 Toggle("对比原图", isOn: $comparing)
                 HStack {
-                    Button("自然调色") { showGenerated = false; model.apply(.natural) }
+                    ForEach(LocalLook.allCases) { look in
+                        Button(look.title) { showGenerated = false; model.apply(look.recipe) }
+                    }
+                }.buttonStyle(.bordered).disabled(model.rendering || model.busy || model.original == nil)
+                HStack {
                     Button("撤销") { showGenerated = false; model.undo() }.disabled(!model.canUndo)
                     Button("恢复原色") { showGenerated = false; model.apply(ToneRecipe()) }
                 }.buttonStyle(.bordered).disabled(model.rendering || model.busy || model.original == nil)

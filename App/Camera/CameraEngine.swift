@@ -15,6 +15,8 @@ enum CameraEvent {
     case failure(String)
     case sceneChanged(Int)
     case preview(UUID, Result<PreviewSample, PreviewSampleError>)
+    case trackingLost(Int)
+    case zoom(Double)
 }
 
 /// All session/device/photo mutation is confined to sessionQueue.
@@ -45,6 +47,7 @@ final class CameraEngine: NSObject {
         analyzer.onResult = { [weak self] result in self?.emit(.analysis(result)) }
         analyzer.onSceneChange = { [weak self] revision in self?.emit(.sceneChanged(revision)) }
         analyzer.onPreview = { [weak self] id, result in self?.emit(.preview(id, result)) }
+        analyzer.onTrackingLost = { [weak self] revision in self?.emit(.trackingLost(revision)) }
         let center = NotificationCenter.default
         observers.append(center.addObserver(forName: AVCaptureSession.wasInterruptedNotification, object: session, queue: nil) { [weak self] _ in
             guard let self else { return }
@@ -181,6 +184,25 @@ final class CameraEngine: NSObject {
             } catch { self.emit(.failure("暂时无法对焦")) }
         }
     }
+    /// User-confirmed digital crop on the current physical lens; no automatic zoom loop.
+    func zoom(by factor: Double) {
+        sessionQueue.async {
+            guard factor.isFinite, (1.0 / 3...1.8).contains(factor), self.desiredRunning,
+                  self.session.isRunning, !self.capturing, !self.interrupted,
+                  let device = self.input?.device else { return }
+            self.refreshAnalysis(forceOff: true)
+            do {
+                try device.lockForConfiguration()
+                defer { device.unlockForConfiguration() }
+                if let value = DigitalZoom.requested(current: Double(device.videoZoomFactor), factor: factor,
+                    minimum: Double(device.minAvailableVideoZoomFactor), maximum: Double(device.maxAvailableVideoZoomFactor)) {
+                    device.videoZoomFactor = CGFloat(value)
+                }
+            } catch { self.emit(.failure("本次数字放大未应用")) }
+            self.emit(.zoom(Double(device.videoZoomFactor)))
+            self.resumeIfNeeded()
+        }
+    }
     func capture() {
         sessionQueue.async {
             guard self.session.isRunning, self.desiredRunning, !self.interrupted,
@@ -273,6 +295,7 @@ final class CameraEngine: NSObject {
             return Lens(id: device.uniqueID, title: title, front: device.position == .front)
         }
         emit(.lenses(lenses, selected: input?.device.uniqueID ?? ""))
+        emit(.zoom(Double(input?.device.videoZoomFactor ?? 1)))
     }
     private func refreshAnalysis(forceOff: Bool = false) {
         analyzer.configure(enabled: !forceOff && desiredRunning && session.isRunning && !capturing && !interrupted && policy.mayCapture,
@@ -308,6 +331,7 @@ final class CameraEngine: NSObject {
             guard let self else { return }
             if case .analysis(let result) = event, !self.analyzer.isCurrent(result.revision) { return }
             if case .sceneChanged(let revision) = event, !self.analyzer.isCurrent(revision) { return }
+            if case .trackingLost(let revision) = event, !self.analyzer.isCurrent(revision) { return }
             if case .preview(let id, .success(let sample)) = event, !self.analyzer.isCurrent(sample.revision) {
                 self.onEvent?(.preview(id, .failure(.invalidated))); return
             }

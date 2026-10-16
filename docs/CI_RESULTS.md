@@ -1,6 +1,8 @@
 # 云端构建与设备 IPA 记录
 
-2026-10-16：当前源码新增点选区域追踪与构图引导，21项Windows结构检查通过。新增后46项Swift测试和设备构建尚未运行；浏览器连接关闭导致免费预算核验及手动CI派发受阻。下文运行#1-#3及IPA全部为历史版本，不包含本轮新功能，旧Release保留。没有重新打包旧二进制冒充新版本。
+2026-10-16：当前点选区域追踪版本已通过21项结构检查、46项Swift测试及设备构建，见文末CI #4。初期浏览器连接中断已恢复；核实免费额度后执行，没有修改预算。下文运行#1-#3及IPA为历史版本，旧Release保留。没有重新打包旧二进制冒充新版本。
+
+新私有发布：[v0.2.0 未签名测试版](https://github.com/sanqianup/FrameGuide/releases/tag/v0.2.0-unsigned-test.1)。资产为本轮核验IPA、SHA256SUMS.txt与中文安装说明；用户自行签名安装。
 
 仓库：[sanqianup/FrameGuide](https://github.com/sanqianup/FrameGuide)，已核验保持 private。检查日期2026-10-15。
 

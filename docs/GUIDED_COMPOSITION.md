@@ -27,8 +27,8 @@
 
 ## 验证状态
 
-Windows已执行21项Node结构检查。新增11项Swift回归测试覆盖点选命中、固定目标、到位稳定与滞回、间歇/过期判定、运动/追踪失效、数字放大建议/限幅/还原、热状态追踪预算和本地预设安全范围。新增测试尚待macOS实际执行；先前版本35项测试通过不代表本次46项已通过。
+Windows已执行21项Node结构检查。新增11项Swift回归测试覆盖点选命中、固定目标、到位稳定与滞回、间歇/过期判定、运动/追踪失效、数字放大建议/限幅/还原、热状态追踪预算和本地预设安全范围。CI #4已实际通过全部46项Swift测试及21项结构检查，设备构建和IPA打包成功。
 
-当前Windows无Swift/Xcode；尚未执行本次设备构建。iPhone16Pro/iOS18.5真机相机、前置镜像/横竖屏框转换、追踪漂移/遮挡、多主体、长时间性能/热状态、数字变焦画质及iOS27均未实测。成功的纯核心测试和编译也不能替代这些验收。
+Windows无Swift/Xcode；本次构建在云端标准macos-15、Xcode16.4 / iOS18.5 SDK执行。iPhone16Pro/iOS18.5真机相机、前置镜像/横竖屏框转换、追踪漂移/遮挡、多主体、长时间性能/热状态、数字变焦画质及iOS27均未实测。成功的纯核心测试和编译也不能替代这些验收。
 
 Apple追踪API参考：https://developer.apple.com/documentation/vision/vntrackobjectrequest 。原生SwiftUI/AVFoundation/Vision实现；没有套用网页设计技能或添加第三方UI依赖。

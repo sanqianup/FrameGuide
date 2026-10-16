@@ -2,7 +2,7 @@
 
 独立、个人自用的原生 iPhone 相机工程。目标设备 iPhone 16 Pro / iOS 18.5，Deployment Target 18.5，后续兼容验证覆盖到 iOS 27。项目仅在当前新任务目录内创建，未改动 GeekListing 或其他工程。
 
-**2026-10-16新增点选区域追踪与目标构图引导源码，Windows 21项结构检查通过；本轮46项Swift测试及设备编译尚待macOS执行。** 浏览器连接关闭，暂不能核验免费额度或手动启动CI。先前 `ec96955842f9a76cec1f6c09b93435d0fc827c23` 的35项测试和设备构建成功，不能替代本轮结果；旧Release保持可用但不包含新功能。详见 [本轮说明](docs/GUIDED_COMPOSITION.md)、[CI结果](docs/CI_RESULTS.md) 与 [验收记录](docs/VERIFICATION.md)。
+**2026-10-16点选区域追踪与目标构图引导版本已通过：21项结构检查、46项Swift测试及iPhoneOS arm64设备构建。** 构建提交 `282815e0592fbd78c9bad0fa926a48c28d161114`，CI #4 / 38832067025；后续文档更新没有改变App源码。新IPA已下载核验，仍未签名、安装或真机测试；旧Release保留。详见 [本轮说明](docs/GUIDED_COMPOSITION.md)、[CI结果](docs/CI_RESULTS.md) 与 [验收记录](docs/VERIFICATION.md)。
 
 ## 已实现的源码范围
 

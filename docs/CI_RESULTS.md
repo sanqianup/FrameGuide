@@ -41,3 +41,11 @@ Windows复核：ZIP和IPA哈希均匹配；内部为 `Payload/FrameGuide.app`。
 签名/安装、iPhone16 Pro实际相机、性能/热状态及iOS27兼容仍全部待验证。签名工具准备见WINDOWS_INSTALL_STATUS.md。
 
 非阻塞日志提示：GitHub对v4 actions的旧Node运行时声明给出提示并强制Node24执行；AppIntents元数据提取因没有相关依赖而跳过。没有为此增加不需要的App能力或再次运行已成功的构建。
+
+## 当前点选追踪版本（2026-10-16）
+
+[CI #4 / 38832067025](https://github.com/sanqianup/FrameGuide/actions/runs/38832067025) success：构建提交`282815e0592fbd78c9bad0fa926a48c28d161114`，21项结构检查、46项纯Swift测试、Apple plist与iPhoneOS arm64设备编译/打包均通过。总51秒、job42秒；不是相机性能数据。工具链Xcode16.4 / Swift6.1.2 / iOS18.5 SDK。
+
+artifact ID12017387673，ZIP SHA-256：`7951b7d5647313c83ae1b13ddbe07f0f56b65a2f69cdcd4927378200f3d92f4e`，保留至2026-10-17 00:54 UTC。IPA 435332字节，SHA-256：`25ac5e0e0249ebb9dc22e62f9cabf810ecfa6fff2e534e8327a627a639ade4c6`。Windows复核平台iOS设备2、arm64、最低18.5.0、SDK18.5.0，无代码签名/描述文件，包内仅可执行文件和系统元数据，无照片或密钥。
+
+新版本仍为未签名测试包；未真机安装、未验证性能/27或真实模型。旧Release保留。运行前核实免费分钟、存储及账户零额外Actions费用阻断，没有修改预算或配置签名/模型凭据。

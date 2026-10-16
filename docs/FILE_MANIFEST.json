@@ -219,8 +219,8 @@
     },
     {
       "path": "docs/CI_RESULTS.md",
-      "sha256": "cd0668ed1b93f01e97be96ebd61ede053d6385a4d268c07826c54dcc71795502",
-      "bytes": 4681
+      "sha256": "6b68570906e7dbb695d5a586a5dbdb200a2b42aa5845d1786b91a2c8c1389fb3",
+      "bytes": 5772
     },
     {
       "path": "docs/CLOUD.md",
@@ -234,13 +234,13 @@
     },
     {
       "path": "docs/GUIDED_COMPOSITION.md",
-      "sha256": "6299f3eb796042fa67fa62968dedfe666a02b6ba9ed8e031f79da94c59ed748b",
-      "bytes": 4296
+      "sha256": "45dc47396b2b140eca9cd07cfc9c112d411a525ac8a580b0c9020e11a32ac631",
+      "bytes": 4360
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "0f10c5094c4301aee2886644c49beeeae6185ab8e091b178a8cc23128ee2d575",
-      "bytes": 9792
+      "sha256": "edc134ac336c55269b1ecfcc584073413c864fd3324b71b670e499b03b016a9c",
+      "bytes": 9917
     },
     {
       "path": "docs/WINDOWS_INSTALL_STATUS.md",
@@ -269,8 +269,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "38a22631efb649074044bada19c95c5af10bda9924d6e71c8b103ec8c03ae2c2",
-      "bytes": 6013
+      "sha256": "53e42e636fa2402c1cba6d82424892a406941926e6f3d612fc28f35c9bd762d5",
+      "bytes": 6021
     },
     {
       "path": "tools/create-manifest.mjs",
